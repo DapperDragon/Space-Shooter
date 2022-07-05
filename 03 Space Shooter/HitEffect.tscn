@@ -1,0 +1,63 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Resources/SFX/Hit.wav" type="AudioStream" id=1]
+
+[sub_resource type="Gradient" id=1]
+offsets = PoolRealArray( 0, 0.614815, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 0.762963, 0.762963, 0.762963, 1, 0, 0, 0, 0.227451 )
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+
+[sub_resource type="ParticlesMaterial" id=3]
+emission_shape = 1
+emission_sphere_radius = 1.53
+flag_disable_z = true
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 50.0
+initial_velocity_random = 0.75
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+color_ramp = SubResource( 2 )
+
+[sub_resource type="Animation" id=4]
+resource_name = "hit"
+tracks/0/type = "value"
+tracks/0/path = NodePath("HitParticles2D:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[node name="HitEffect" type="Node2D"]
+
+[node name="HitSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 1 )
+pitch_scale = 3.0
+autoplay = true
+
+[node name="HitParticles2D" type="Particles2D" parent="."]
+position = Vector2( -0.793701, 0 )
+scale = Vector2( 2, 2 )
+emitting = false
+lifetime = 0.7
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource( 3 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "hit"
+anims/hit = SubResource( 4 )
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="queue_free"]
+[connection signal="timeout" from="Timer" to="." method="queue_free"]
